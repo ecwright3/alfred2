@@ -1,7 +1,7 @@
 import sqlite3
 import os
-
-
+import uuid
+import glob
 
 
 #+++++++++++++++++++++++++++++++++++++++++  Standard Alfred Database Objects  ++++++++++++++++++++++++++++++++++++++++++#
@@ -20,16 +20,16 @@ import os
 #   v_logs     - eventDate, severity, eventName, user, message, componentSource                                         #
 ##---------------------------------------------------------------------------------------------------------------------##
 
-#Check for existing databases.  This is a  job of the controller. The controller is respnsible for telling teh DBHandler which Database to work with. 
-#The DbHandler is responsible for performing CRUD operations for any database passed to it.  
+#Check for existing databases. This is a  job of the controller.
+#The controller is respnsible for telling teh DBHandler which Database to work with.
+#The DbHandler is responsible for performing CRUD operations for any database passed to it.
 
 #DbHandler Functions
 
 ##Database Functions
-#   Create Database
+#   Create Database (Done)
+#   List Database(s)
 #   Drop Database
-#   Rename Database
-
 
 ##Table Functions
 #   Create Table
@@ -39,12 +39,33 @@ import os
 #   Insert Row(s)
 #   Update Row(s)
 #   Select Row(s)
-#   Delete Row(s)    
-#   
-
+#   Delete Row(s)
 
 ##View Functions
-#   Create View 
+#   Create View
 #   Rename View
 #   Drop View(s)
 #   Select Row(s)
+
+##Advanced Function
+#   New_AlfredDb
+
+
+
+def create(name='alf'):
+    """
+    Creates a new Sqlite3 database.
+    """
+    #Check If a database already exists
+    dbDirPath = os.path.join(os.path.dirname(__file__), '..\storage')
+    dbList = glob.glob("%s\*.db" %dbDirPath)
+    if len(dbList) > 0 :
+        dbPath = dbList[0]
+    else:
+        dbName ="%s_%s.db"%(str(name).lower().strip(),str(uuid.uuid4()))
+        dbPath = os.path.join(os.path.dirname(__file__), '..\storage\%s' %dbName)
+        conn = sqlite3.connect(dbPath)
+    return dbPath    
+
+test = create("test")
+print(test)
