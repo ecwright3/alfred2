@@ -8,7 +8,7 @@ import glob
 #-----------------------------------------------------------------------------------------------------------------------#
 #                                                      TABLES                                                           #
 #=======================================================================================================================#
-#   resource  - resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType          #
+#   resources  - resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType         #
 #   keys      - keyUid, name, user, key, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseDestinationUrl       #
 #   logs      - eventUid, severity(debug/info/warn/error), eventName message, eventDate, user, componentSource          #
 #-----------------------------------------------------------------------------------------------------------------------#
@@ -51,6 +51,26 @@ import glob
 #   New_AlfredDb
 
 
+def initialize(database=""):
+    if len(database) == 0:
+        create()
+    
+    else:
+        conn = sqlite3.connect(database)
+        c = conn.cursor()
+        #resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType 
+        c.execute(''' CREATE TABLE resources
+        (resourceUid text, instancename text, instanceId text, resourceType text, dateCreated text, ipaddress text, configurationType text)
+        '''
+        )
+
+        conn.commit()
+        conn.close()
+        return database
+
+
+
+
 
 def create(name='alf'):
     """
@@ -65,6 +85,7 @@ def create(name='alf'):
         dbName ="%s_%s.db"%(str(name).lower().strip(),str(uuid.uuid4()))
         dbPath = os.path.join(os.path.dirname(__file__), '..\storage\%s' %dbName)
         conn = sqlite3.connect(dbPath)
+        initialize(dbPath)
     return dbPath    
 
 test = create("test")

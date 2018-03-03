@@ -1,11 +1,13 @@
 from cmd import Cmd
 from resources import resources
-import controller 
+from controller import controller 
 import os
 
 
 class AlfredConsole(Cmd, object):
-    intro = resources.art.main()
+    intro = resources.art.main() 
+    controller.mySettings()
+    
 
     def do_quit(self, args):
         """Quits the program."""
