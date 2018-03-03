@@ -1,10 +1,11 @@
 from cmd import Cmd
-from resources import art 
+from resources import resources
+import controller 
 import os
 
 
 class AlfredConsole(Cmd, object):
-    intro = art.main()
+    intro = resources.art.main()
 
     def do_quit(self, args):
         """Quits the program."""
@@ -12,15 +13,12 @@ class AlfredConsole(Cmd, object):
         raise SystemExit
 
     def do_show(self, args):
-        """
-        Displays information about the Alfred console
-        
-        Avalible Show Options:
-        ==============================================
-        banner
-        resources
-
-        """
+        """         
+Displays information about the Alfred console\n
+Avalible Show Options:
+==============================================
+banner\t resources
+         """
         options = ['banner', 'resources']
 
         if len(args) == 0:
@@ -29,5 +27,6 @@ class AlfredConsole(Cmd, object):
             print("%s is not a valid command" %args)
         
         if args.lower() == "banner":
-            art.main()            
+            resources.art.main()            
+    
                 
