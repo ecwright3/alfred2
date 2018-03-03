@@ -30,9 +30,9 @@ def main():
 #             |  _  | |   |  _| |    /|  __|| | | | 
 #             | | | | |___| |   | |\ \| |___| |/ /  
 #             \_| |_|_____|_|   \_| \_\____/|___/   
-#                                                  v.0.1b
+#                                                  v.0.2b
             
-              ---Your Personal Hacking Assistant---
+              ---Your Personal Pentesting Assistant---
 
     """
 
