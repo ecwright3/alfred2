@@ -16,7 +16,7 @@ import glob
 #                                                      VIEWS                                                            #
 #=======================================================================================================================#
 #   v_resoures - instanceName,dateCreated,resourceType,ipaddress,configurationType                                      #
-#   v_keys     - keyName, dateStored, keyType, user, baseUrl                                                               #
+#   v_keys     - keyName, keyUser, dateStored, keyType, user, baseUrl                                                               #
 #   v_logs     - eventDate, severity, eventName, user, message, componentSource                                         #
 ##---------------------------------------------------------------------------------------------------------------------##
 
@@ -54,7 +54,6 @@ import glob
 def initialize(database=""):
     if len(database) == 0:
         create()
-    
     else:
         conn = sqlite3.connect(database)
         c = conn.cursor()
@@ -71,12 +70,12 @@ def initialize(database=""):
 
         #create keys table
         c.execute(''' CREATE TABLE keys
-        (keyUid text, keyName text, keyText text, keyType text, dateStored text, timeStored text, baseUrl text)
+        (keyUid text, keyName text, keyUser text keyText text, keyType text, dateStored text, timeStored text, baseUrl text)
         '''
         )
 
         #create v_keys view
-        c.execute(''' CREATE VIEW v_keys AS SELECT keyName, dateStored, timeStored, keyType, user, baseUrl FROM keys ''')
+        c.execute(''' CREATE VIEW v_keys AS SELECT keyName, dateStored, timeStored, keyType, keyUser, baseUrl FROM keys ''')
         # 
         # 
         #   
@@ -88,16 +87,10 @@ def initialize(database=""):
         #create v_logs view
         c.execute( ''' CREATE VIEW v_logs AS SELECT  eventDate, eventTime, severity, eventName, user, message, eventSource FROM logs
         '''
-
         )
-
-
-
         conn.commit()
         conn.close()
         return database
-
-
 
 
 
@@ -116,3 +109,11 @@ def create(name='alf'):
         #conn = sqlite3.connect(dbPath)
         initialize(dbPath)
     return dbPath    
+
+def getKeys(database):
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    c.execute( 'SELECT * FROM v_keys')
+    keyView = c.fetchall()
+
+    return keyView

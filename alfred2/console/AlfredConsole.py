@@ -2,12 +2,14 @@ from cmd import Cmd
 from resources import resources
 from controller import controller 
 import os
+import pprint
+pp = pprint.PrettyPrinter(indent=5)
 
+Control = controller.alfCore()
 
 class AlfredConsole(Cmd, object):
     intro = resources.art.main() 
-    controller.alfCore()
-    
+    #controller.alfCore()
 
     def do_quit(self, args):
         """Quits the program."""
@@ -21,7 +23,7 @@ Avalible Show Options:
 ==============================================
 banner\t resources
          """
-        options = ['banner', 'resources']
+        options = ['banner', 'resources', 'settings']
 
         if len(args) == 0:
             print("You need to tell me what to show.")
@@ -29,6 +31,13 @@ banner\t resources
             print("%s is not a valid command" %args)
         
         if args.lower() == "banner":
-            resources.art.main()            
+            resources.art.main()  
+
+        if args.lower() == "settings":
+            curSetting = Control.showSettings()
+            pp.pprint(curSetting)
+
+  
+                          
     
                 
