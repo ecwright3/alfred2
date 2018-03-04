@@ -9,14 +9,14 @@ import glob
 #                                                      TABLES                                                           #
 #=======================================================================================================================#
 #   resources  - resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType         #
-#   keys      - keyUid, name, user, key, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseDestinationUrl       #
-#   logs      - eventUid, severity(debug/info/warn/error), eventName message, eventDate, user, componentSource          #
+#   keys      - keyUid, keyName, user, keyText, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseUrl           #
+#   logs      - eventUid, severity(debug/info/warn/error), eventName message, eventDate, user, eventSource              #
 #-----------------------------------------------------------------------------------------------------------------------#
 #                                                                                                                       #
 #                                                      VIEWS                                                            #
 #=======================================================================================================================#
 #   v_resoures - instanceName,dateCreated,resourceType,ipaddress,configurationType                                      #
-#   v_keys     - name, dateStored, keyType, user, baseDestinationUrl                                                    #
+#   v_keys     - keyName, dateStored, keyType, user, baseUrl                                                               #
 #   v_logs     - eventDate, severity, eventName, user, message, componentSource                                         #
 ##---------------------------------------------------------------------------------------------------------------------##
 
@@ -58,11 +58,40 @@ def initialize(database=""):
     else:
         conn = sqlite3.connect(database)
         c = conn.cursor()
-        #resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType 
+
+        #create resources table
         c.execute(''' CREATE TABLE resources
-        (resourceUid text, instancename text, instanceId text, resourceType text, dateCreated text, ipaddress text, configurationType text)
+        (resourceUid text, instanceName text, instanceId text, resourceType text, dateCreated text, timeCreated text, ipAddress text, configurationType text)
         '''
         )
+        #create v_resource view 
+        c.execute(''' CREATE VIEW v_resources AS SELECT instanceName, dateCreated, timeCreated, resourceType, ipAddress, configurationType FROM resources     
+        '''
+        )
+
+        #create keys table
+        c.execute(''' CREATE TABLE keys
+        (keyUid text, keyName text, keyText text, keyType text, dateStored text, timeStored text, baseUrl text)
+        '''
+        )
+
+        #create v_keys view
+        c.execute(''' CREATE VIEW v_keys AS SELECT keyName, dateStored, timeStored, keyType, user, baseUrl FROM keys ''')
+        # 
+        # 
+        #   
+        #create logs table
+        c.execute(''' CREATE TABLE logs
+        (eventUid text, eventDate text, eventTime text, severity text, eventName text, user text, meessage text, eventSource text)
+        '''
+        )
+        #create v_logs view
+        c.execute( ''' CREATE VIEW v_logs AS SELECT  eventDate, eventTime, severity, eventName, user, message, eventSource FROM logs
+        '''
+
+        )
+
+
 
         conn.commit()
         conn.close()
@@ -78,15 +107,12 @@ def create(name='alf'):
     """
     #Check If a database already exists
     dbDirPath = os.path.join(os.path.dirname(__file__), '..\storage')
-    dbList = glob.glob("%s\*.db" %dbDirPath)
+    dbList = glob.glob("%s\%s_*.db" %(dbDirPath, name))
     if len(dbList) > 0 :
         dbPath = dbList[0]
     else:
         dbName ="%s_%s.db"%(str(name).lower().strip(),str(uuid.uuid4()))
         dbPath = os.path.join(os.path.dirname(__file__), '..\storage\%s' %dbName)
-        conn = sqlite3.connect(dbPath)
+        #conn = sqlite3.connect(dbPath)
         initialize(dbPath)
     return dbPath    
-
-test = create("test")
-print(test)

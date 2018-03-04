@@ -6,7 +6,7 @@ import os
 
 class AlfredConsole(Cmd, object):
     intro = resources.art.main() 
-    controller.mySettings()
+    controller.alfCore()
     
 
     def do_quit(self, args):
