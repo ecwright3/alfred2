@@ -1,6 +1,6 @@
 from cmd import Cmd
 from resources import resources
-from controller import controller 
+from controller import controller
 import os
 import pprint
 pp = pprint.PrettyPrinter(indent=5)
@@ -37,7 +37,24 @@ banner\t resources
             curSetting = Control.showSettings()
             pp.pprint(curSetting)
 
-  
+
+
+    def do_build(self, args):
+        """ Create infrastructure """
+
+        options = ['server']
+
+        if len(args) == 0:
+            print("You have to tell me what we are building. Please Try again.")
+        if args.lower().strip() not in options:
+            print("%s, is not a valid command" %args)
+        
+        if args.lower().strip() == "server":
+            server = Control.buildServer()
+            print(server)
+            
+
+        
                           
     
                 

@@ -1,9 +1,10 @@
 from controller import DbHandler
+import importlib
 import settings
-import modules
 import os
 import glob
 import collections
+from modules import DigitalOcean as service
 #import settings
 
 
@@ -19,10 +20,9 @@ class alfCore():
         self.InfrastructureService = settings.InfrastructureService
         self.MailService = settings.MailService
         self.StorageService = settings.StorageService        
-
       
     def showSettings(self):
-        KeyStatus = DbHandler.getKeys(self.database)
+        KeyStatus = DbHandler.listKeys(self.database)
         keys = {}
         for i in KeyStatus:
             key = {
@@ -42,7 +42,21 @@ class alfCore():
     #self.Facebook = settings.Facebook
     #self.Instagram = settings.Instagram
     #self.Slack = settings.Slack 
+    def buildServer(self):
+        InfKey = DbHandler.getKey(
+            database=self.database,
+            keyName=self.InfrastructureService
+            )
+        
+        token = InfKey[0][1]
+        result =  service.InfrastructureService().create_server(token=token)
+        
+        #Send details to Resources Table
 
+
+        #Send Action to log Table
+
+        return result   
 
 
 

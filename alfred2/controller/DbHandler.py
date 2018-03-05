@@ -9,14 +9,14 @@ import glob
 #                                                      TABLES                                                           #
 #=======================================================================================================================#
 #   resources  - resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType         #
-#   keys      - keyUid, keyName, user, keyText, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseUrl           #
+#   keys      - keyUid, keyName, keyUser, keyText, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseUrl           #
 #   logs      - eventUid, severity(debug/info/warn/error), eventName message, eventDate, user, eventSource              #
 #-----------------------------------------------------------------------------------------------------------------------#
 #                                                                                                                       #
 #                                                      VIEWS                                                            #
 #=======================================================================================================================#
 #   v_resoures - instanceName,dateCreated,resourceType,ipaddress,configurationType                                      #
-#   v_keys     - keyName, keyUser, dateStored, keyType, user, baseUrl                                                               #
+#   v_keys     - keyName, keyUser, dateStored, keyType, baseUrl                                                               #
 #   v_logs     - eventDate, severity, eventName, user, message, componentSource                                         #
 ##---------------------------------------------------------------------------------------------------------------------##
 
@@ -92,8 +92,6 @@ def initialize(database=""):
         conn.close()
         return database
 
-
-
 def create(name='alf'):
     """
     Creates a new Sqlite3 database.
@@ -110,10 +108,21 @@ def create(name='alf'):
         initialize(dbPath)
     return dbPath    
 
-def getKeys(database):
+def listKeys(database):
     conn = sqlite3.connect(database)
     c = conn.cursor()
     c.execute( 'SELECT * FROM v_keys')
     keyView = c.fetchall()
+    conn.close()
 
     return keyView
+
+
+def getKey(database,keyName):
+    kn = (keyName,)
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    c.execute('SELECT keyUser, keyText FROM keys WHERE keyName=?', kn)
+    myKey = c.fetchall()
+    conn.close()
+    return myKey    
