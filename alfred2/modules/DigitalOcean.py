@@ -67,10 +67,14 @@ class InfrastructureService():
             DropletData = {
                 "id" : Droplet['id'],
                 "name": Droplet['name'],
-                "created_at" : Droplet['created_at'],
+                #split time and convert from UTC local time
+                #raw 'created_at' output:'2018-03-05T10:15:06Z'
+                #
+                "created_at" : Droplet['created_at'], 
+                "type" : "server",
                 "ip_address" : Droplet['networks']['v4'][0]['ip_address']
             }
-
+            
             return DropletData
 
     def delete_server(self, token, id):

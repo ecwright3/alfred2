@@ -5,7 +5,6 @@ import os
 import glob
 import collections
 from modules import DigitalOcean as service
-#import settings
 
 
 class alfCore():
@@ -42,6 +41,7 @@ class alfCore():
     #self.Facebook = settings.Facebook
     #self.Instagram = settings.Instagram
     #self.Slack = settings.Slack 
+
     def buildServer(self):
         InfKey = DbHandler.getKey(
             database=self.database,
@@ -52,9 +52,12 @@ class alfCore():
         result =  service.InfrastructureService().create_server(token=token)
         
         #Send details to Resources Table
-
-
+        DbHandler.addResource(
+            database=self.database,
+            resource=result
+        )
         #Send Action to log Table
+        
 
         return result   
 

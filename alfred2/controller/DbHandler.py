@@ -8,9 +8,9 @@ import glob
 #-----------------------------------------------------------------------------------------------------------------------#
 #                                                      TABLES                                                           #
 #=======================================================================================================================#
-#   resources  - resourceUid, instanceName, instanceId, resourceType, dateCreated, ipAddress, configurationType         #
-#   keys      - keyUid, keyName, keyUser, keyText, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseUrl           #
-#   logs      - eventUid, severity(debug/info/warn/error), eventName message, eventDate, user, eventSource              #
+# resources - resourceUid,instanceName,instanceId,resourceType,dateCreated,timeCreated,ipAddress,configurationType      #
+# keys      - keyUid, keyName, keyUser, keyText, keyType(API/PGP/SSHPriv/SSHPub/password), dateStored, baseUrl          #
+# logs      - eventUid, severity(debug/info/warn/error), eventName message, eventDate, user, eventSource                #
 #-----------------------------------------------------------------------------------------------------------------------#
 #                                                                                                                       #
 #                                                      VIEWS                                                            #
@@ -26,29 +26,6 @@ import glob
 
 #DbHandler Functions
 
-##Database Functions
-#   Create Database (Done)
-#   List Database(s)
-#   Drop Database
-
-##Table Functions
-#   Create Table
-#   Update Table
-#   Rename Table
-#   Drop Table(s)
-#   Insert Row(s)
-#   Update Row(s)
-#   Select Row(s)
-#   Delete Row(s)
-
-##View Functions
-#   Create View
-#   Rename View
-#   Drop View(s)
-#   Select Row(s)
-
-##Advanced Function
-#   New_AlfredDb
 
 
 def initialize(database=""):
@@ -117,7 +94,6 @@ def listKeys(database):
 
     return keyView
 
-
 def getKey(database,keyName):
     kn = (keyName,)
     conn = sqlite3.connect(database)
@@ -125,4 +101,21 @@ def getKey(database,keyName):
     c.execute('SELECT keyUser, keyText FROM keys WHERE keyName=?', kn)
     myKey = c.fetchall()
     conn.close()
-    return myKey    
+    return myKey
+
+def addResource(database,resource):
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    newRuid = str(uuid.uuid4())
+            #resourceUid, instanceName, instanceId, resourceType, dateCreated, timeCreated,ipAddress, configurationType
+    rDetails = (newRuid,resource['name'],resource['id'],resource['type'],resource['created_at'],'',resource['ip_address'],'',)
+    c.execute('INSERT INTO resources VALUES (?,?,?,?,?,?,?,?)', rDetails)
+    conn.commit()
+    conn.close()
+
+def addLogEntry(database,entry):
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    eventUid = str(uuid.uuid4())
+    lEntry = (eventUid,) 
+
