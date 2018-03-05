@@ -1,5 +1,4 @@
 import requests
-import config
 import json
 import sqlite3
 
@@ -15,7 +14,7 @@ def get_droplets(dropletId):
 
     return DropletData['droplet']
 
-def create_droplet(name=None):
+def create_server(name=None):
     #Build the droplet
     if name == None:
         name = "Alfred-Test-Server"
