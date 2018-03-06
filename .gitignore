@@ -104,3 +104,5 @@ ENV/
 # sqlite3 database
 .sqlite3
 .db
+#privateKey
+my-rsakey.txt

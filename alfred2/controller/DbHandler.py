@@ -58,7 +58,7 @@ def initialize(database=""):
         #   
         #create logs table
         c.execute(''' CREATE TABLE logs
-        (eventUid text, eventDate text, eventTime text, severity text, eventName text, user text, meessage text, eventSource text)
+        (eventUid text, eventDate text, eventTime text, severity text, eventName text, user text, message text, eventSource text)
         '''
         )
         #create v_logs view
@@ -113,9 +113,21 @@ def addResource(database,resource):
     conn.commit()
     conn.close()
 
+def listResources(database):
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    c.execute( 'SELECT * FROM v_resources')
+    resourceView = c.fetchall()
+    conn.close()
+
+    return resourceView    
+
+#eventUid,eventDate,eventTitle,severity,eventName,user,message, eventSource
 def addLogEntry(database,entry):
     conn = sqlite3.connect(database)
     c = conn.cursor()
-    eventUid = str(uuid.uuid4())
-    lEntry = (eventUid,) 
+    #eventUid = str(uuid.uuid4())
+    c.execute('INSERT INTO logs VALUES (?,?,?,?,?,?,?,?)',entry)
+    conn.commit()
+    conn.close()
 

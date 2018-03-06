@@ -37,6 +37,9 @@ banner\t resources
             curSetting = Control.showSettings()
             pp.pprint(curSetting)
 
+        if args.lower() == "resources":
+            resourcesList = Control.listResources()
+            print(resourcesList)    
 
 
     def do_build(self, args):

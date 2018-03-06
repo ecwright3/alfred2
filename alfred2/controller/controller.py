@@ -4,6 +4,7 @@ import settings
 import os
 import glob
 import collections
+import uuid
 from modules import DigitalOcean as service
 
 
@@ -19,7 +20,23 @@ class alfCore():
         self.InfrastructureService = settings.InfrastructureService
         self.MailService = settings.MailService
         self.StorageService = settings.StorageService        
-      
+
+    def listResources(self):
+          resourceList = DbHandler.listResources(self.database)
+          resourceTable = """
+-----------------------------------------------------------------------------------------------------------------
+ResourceName       |      Date Created       | Time | Resource Type |     IP Address    |  Configuration Type   |
+----------------------------------------------------------------------------------------------------------------- 
+ """
+          for r in resourceList:
+              
+              resourceTable += """
+%s |    %s |    %s  |    %s     |    %s |                       |
+-----------------------------------------------------------------------------------------------------------------               
+              """ % (r[0], r[1], r[2], r[3], r[4])
+
+          return resourceTable       
+    
     def showSettings(self):
         KeyStatus = DbHandler.listKeys(self.database)
         keys = {}
@@ -33,6 +50,10 @@ class alfCore():
                 "urlBase"       : i[5]
             }
             keys[key['keyName']] = key
+
+        
+
+
         return keys
         #return coreSettings
         
@@ -57,7 +78,17 @@ class alfCore():
             resource=result
         )
         #Send Action to log Table
+
+        #eventUid,eventDate,eventTitle,severity,eventName,user,message, eventSource
+        message = "%s - instance id: %s, Ip address(%s), was created" %(result['name'], result['id'], result['ip_address'])
+        serverName = result['name']
+        eventId = str(uuid.uuid4())
+        entry = (eventId, result['created_at'],'New Server Created','INFO',result['name'],'', message,'alfCore.buildServer',)
         
+        DbHandler.addLogEntry(
+            database=self.database,
+            entry=entry
+        )
 
         return result   
 
