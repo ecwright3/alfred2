@@ -119,9 +119,29 @@ def listResources(database):
     c.execute( 'SELECT * FROM v_resources')
     resourceView = c.fetchall()
     conn.close()
-
     return resourceView    
 
+def getResources(database,all=False,id=None):
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+
+    if all == True:
+        c.execute('SELECT * FROM resources')
+    
+    elif id == None:
+        conn.close()
+        resQuery = "Did not supply an instance Id. Please try again."
+
+    elif type(id) != tuple:
+        conn.close()
+        resQuery = "Instance Id must be a tuple."        
+    else:
+        c.execute('SELECT * FROM resources WHERE instanceId=?',id)
+
+    resQuery = c.fetchall()
+    conn.close()
+    return resQuery        
+    
 #eventUid,eventDate,eventTitle,severity,eventName,user,message, eventSource
 def addLogEntry(database,entry):
     conn = sqlite3.connect(database)
@@ -131,3 +151,12 @@ def addLogEntry(database,entry):
     conn.commit()
     conn.close()
 
+def deleteResource(database,instanceId):
+    """ Delete resource items based on instanceId"""
+    instanceId = (instanceId,)
+    conn = sqlite3.connect(database)
+    c = conn.cursor()
+    #will need to add in input validation ensure is a tuple
+    c.execute('DELETE FROM resources WHERE instanceId=?',instanceId)
+    conn.commit()
+    conn.close()
