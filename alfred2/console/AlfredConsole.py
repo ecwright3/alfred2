@@ -1,3 +1,4 @@
+from controller import controller
 from cmd import Cmd
 from resources import resources
 import os
