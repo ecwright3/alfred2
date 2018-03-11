@@ -1,6 +1,5 @@
 from cmd import Cmd
 from resources import resources
-from controller import controller
 import os
 import pprint
 pp = pprint.PrettyPrinter(indent=5)
@@ -55,9 +54,28 @@ banner\t resources
         if args.lower().strip() == "server":
             server = Control.buildServer()
             print(server)
-            
 
+
+    def do_import(self, args):
+        """ 
+Import resources and keys 
+
+Avalible Import Options
+==================================
+server\t key\t resource
+        """
+        options = ['server','key','resource']
+        #request = list(filter(lambda x: str(x).lower().strip() in options, args)) 
+        if len(args) == 0:
+            print("You have to tell me what you want to import. Please try again.")     
         
-                          
+        elif args == "server":
+            a =  input("Would you like to add a server from %s?(y/n)" %Control.InfrastructureService)
+            if a.lower().strip()[0] == 'y':
+                print("collecting details....\n")
+                cloudServers = Control.listCspServers()
+                print(cloudServers)
+
+
     
                 

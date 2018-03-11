@@ -26,8 +26,6 @@ import glob
 
 #DbHandler Functions
 
-
-
 def initialize(database=""):
     if len(database) == 0:
         create()

@@ -36,9 +36,6 @@ class alfCore():
         self.dbresult = list(map(lambda x: DbHandler.deleteResource(database=self.database, instanceId= x),self.orphanresourceIds))
 
 
-
-
-
     def listResources(self):
           resourceList = DbHandler.listResources(self.database)
           resourceTable = """
@@ -53,8 +50,7 @@ ResourceName       |      Date Created       | Time | Resource Type |     IP Add
 -----------------------------------------------------------------------------------------------------------------               
               """ % (r[0], r[1], r[2], r[3], r[4])
 
-          return resourceTable
-          #return self.dbresult   
+          return resourceTable  
     
     def showSettings(self):
         KeyStatus = DbHandler.listKeys(self.database)
@@ -108,5 +104,25 @@ ResourceName       |      Date Created       | Time | Resource Type |     IP Add
 
         return result   
 
+    def listCspServers(self,args):
 
+##############################################################################################################################
+        token = DbHandler.getKey(database=self.database, keyName=self.InfrastructureService)[0][1]
+        CspResourceList = service.InfrastructureService().list_servers(token = token)
+        resourceTable = """\n
+-------------------------------------------------------------------------------------------------------------------------------
+      Server Name          |      Date Created        | Instance Id | Resource Type |     IP Address   |  Configuration Type  |
+------------------------------------------------------------------------------------------------------------------------------- 
+ """
+        for r in CspResourceList:
+              
+              resourceTable += """
+%s |    %s  |    %s |    %s     |    %s  |                      |
+-------------------------------------------------------------------------------------------------------------------------------               
+               """ % (r['name'], r['created_at'], r['id'],'server', r['networks']['v4'][0]['ip_address'])
+        #CspResourceIds = list(map(lambda x: str(x['id']),CspResourceList))
+        if len(CspResourceList) == 0:
+            resourceTable += "\n No servers found in %s environment.\n" %self.InfrastructureService
+           
+        return resourceTable
 
